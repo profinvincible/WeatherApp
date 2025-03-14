@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    // backgroundColor: "rgba(0,0,0,0.5)",
   },
   weatherPageContainer: {
     flex: 1,
@@ -184,3 +184,9 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+// eas build --profile preview --platform android
+// eas build --profile preview --platform all
+// for google playstore
+// For Android: eas build --profile production --platform android
+// For iOS: eas build --profile production --platform ios
