@@ -4,26 +4,29 @@
     "slug": "WeatherApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/download.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/download.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.muoghaluijeoma.weatherapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/download.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.floxxy_d.WeatherApp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "splash": {
+        "image": "./assets/download.png"
+      }
     },
     "extra": {
       "eas": {

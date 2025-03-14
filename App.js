@@ -6,10 +6,57 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Linking,
+  ImageBackground,
   Image,
 } from "react-native";
 import axios from "axios";
+
+// Function to get custom background image based on weather condition
+const getWeatherBackground = (weather) => {
+  if (!weather) return require("./assets/backgroundWeather.jpg");
+  const condition = weather.weather[0].main.toLowerCase();
+  switch (condition) {
+    case "clear":
+      return require("./assets/animations/sunnyBackgrounds.jpeg");
+    case "clouds":
+      return require("./assets/animations/cloudyBackground.jpg");
+    case "rain":
+      return require("./assets/animations/rainyBackgrounds.jpeg");
+    case "snow":
+      return require("./assets/animations/snowyBackground.png");
+    default:
+      return require("./assets/backgroundWeather.jpg");
+  }
+};
+
+const WeatherScreen = ({ weather, onBack }) => {
+  return (
+    <ImageBackground
+      source={getWeatherBackground(weather)}
+      style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.weatherText}>
+          {weather.name}, {weather.sys.country}
+        </Text>
+        <Text style={styles.weatherText}>
+          Temperature: {weather.main.temp}°C
+        </Text>
+        <Text style={styles.weatherText}>
+          Weather: {weather.weather[0].description}
+        </Text>
+        <Image
+          source={{
+            uri: `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`,
+          }}
+          style={styles.weatherIcon}
+        />
+        <TouchableOpacity onPress={onBack} style={styles.button}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
+  );
+};
 
 const App = () => {
   const [city, setCity] = useState("");
@@ -17,7 +64,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_KEY = "7b1b324e35bd239c356b59e62378370e"; // Directly put the API key here
+  const API_KEY = "7b1b324e35bd239c356b59e62378370e";
 
   const fetchWeather = async () => {
     if (!city.trim()) {
@@ -38,48 +85,65 @@ const App = () => {
     }
   };
 
+  if (weather) {
+    return <WeatherScreen weather={weather} onBack={() => setWeather(null)} />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Weather App</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter city name"
-        value={city}
-        onChangeText={setCity}
-      />
-      <TouchableOpacity onPress={fetchWeather} style={styles.button}>
-        <Text style={styles.buttonText}>Get Weather</Text>
-      </TouchableOpacity>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      {weather && (
-        <View style={styles.weatherContainer}>
-          <Text style={styles.weatherText}>
-            {weather.name}, {weather.sys.country}
-          </Text>
-          <Text style={styles.weatherText}>
-            Temperature: {weather.main.temp}°C
-          </Text>
-          <Text style={styles.weatherText}>
-            Weather: {weather.weather[0].description}
-          </Text>
-        </View>
-      )}
-    </View>
+    <ImageBackground
+      source={require("./assets/backgroundWeather.jpg")}
+      style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>🌤 Weather App</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter city name"
+          value={city}
+          onChangeText={setCity}
+          placeholderTextColor="#555"
+        />
+        <TouchableOpacity onPress={fetchWeather} style={styles.button}>
+          <Text style={styles.buttonText}>Get Weather</Text>
+        </TouchableOpacity>
+        {loading && <ActivityIndicator size="large" color="#ffdd00" />}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  weatherPageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#f5f5f5",
   },
+  weatherBox: {
+    backgroundColor: "green",
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
+    color: "#ffdd00",
     marginBottom: 16,
   },
   input: {
@@ -87,33 +151,35 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ffdd00",
     borderRadius: 8,
     backgroundColor: "#fff",
+    color: "#333",
   },
   button: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#ff6347",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 20,
     marginTop: 10,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   error: {
-    color: "red",
+    color: "#ff4444",
     marginTop: 8,
   },
-  weatherContainer: {
-    marginTop: 16,
-    alignItems: "center",
-  },
   weatherText: {
-    fontSize: 18,
+    fontSize: 20,
+    color: "#fff",
     marginBottom: 8,
+  },
+  weatherIcon: {
+    width: 100,
+    height: 100,
   },
 });
 
